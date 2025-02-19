@@ -4,21 +4,36 @@ import Heart from "./Heart";
 import Player from "./Player";
 import Wall from "./Wall";
 import TempWall from "./TempWall";
+import { useMount } from "react-use";
 
 const elements: FC[] = [Grass, Heart, Player, Wall, TempWall];
 
 type Props = {
     originMap: string[],
     onWin: () => void
-}
+};
 
 export default function Level({ originMap, onWin }: Props) {
-    const [map, setMap] = useState(originMap)
+    const [map, setMap] = useState(originMap);
     const deferedMap = useDeferredValue(map);
-    const moveCount = useRef(0)
+    const moveCount = useRef(0);
+    
+    useMount(() => {
+        if (moveCount.current === 0) {
+            setMap(toggleTempWalls(originMap));
+        }
+    })
+
+    // Store the original TempWall positions
+    const originalTempWalls = useRef(
+        originMap.flatMap((row, y) => 
+            row.split("").map((cell, x) => (cell === "4" ? { x, y } : null))
+        ).filter(Boolean) as { x: number, y: number }[]
+    );
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyDown);
+
         return () => window.removeEventListener("keydown", handleKeyDown);
 
         function handleKeyDown(event: KeyboardEvent) {
@@ -46,10 +61,13 @@ export default function Level({ originMap, onWin }: Props) {
                 if (x !== -1) return { x, y };
             }
             return null;
-        };
+        }
 
         function movePlayer(dx: number, dy: number) {
-            const { x, y } = findPlayer()!;
+            const playerPos = findPlayer();
+            if (!playerPos) return;
+            
+            const { x, y } = playerPos;
             let newX = x + dx;
             let newY = y + dy;
 
@@ -65,7 +83,8 @@ export default function Level({ originMap, onWin }: Props) {
                 const newMap = [...map];
                 newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
-                setMap(newMap);
+                setMoveCount(newMap);
+                setMap(toggleTempWalls(newMap));
                 return;
             }
 
@@ -76,48 +95,56 @@ export default function Level({ originMap, onWin }: Props) {
                 const newMap = [...map];
                 newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
-                setMap(newMap);
+                setMoveCount(newMap);
+                setMap(toggleTempWalls(newMap));
             }
-        };
+        }
+
+        function setMoveCount(newMap: string[]) {
+            if (newMap.join("") !== map.join("")) {
+                moveCount.current++;
+                console.log(moveCount.current)
+            }
+        }
     }, [map]);
 
     useEffect(() => {
-        const previousMap = deferedMap.join('')
-        const newMap = map.join('')
+        const previousMap = deferedMap.join('');
 
-        addMoveCount()
-        checkWinning()
+        checkWinning();
+
         function checkWinning() {
-            if (previousMap.indexOf('1') === -1) {
-                onWin()
+            if (previousMap.indexOf("1") === -1) {
+                onWin();
             }
         }
 
-        function addMoveCount() {
-            if (previousMap !== newMap) {
-                moveCount.current++;
-            }
-        }
-    }, [deferedMap, onWin, map])
+    }, [deferedMap, onWin]);
 
-    return <div className='map'>
-        {map.map((row, y) => {
-            return <div key={y}>
-                {row.split("").map((num, x) => {
-                    const Element = elements[parseInt(num)];
+    return (
+        <div className="map">
+            {map.map((row, y) => (
+                <div key={y}>
+                    {row.split("").map((num, x) => {
+                        const Element = elements[parseInt(num)];
+                        return <Element key={x} />;
+                    })}
+                </div>
+            ))}
+        </div>
+    );
 
-                    // if (Element === TempWall) {
-                    //     if (moveCount.current % 2 === 0) {
-                    //         return <Grass key={x} />
-                    //     }
-                    // }
-
-                    return <Element key={x} />
-                })}
-            </div>
-        })
-        }
-
-    </div>
+    function toggleTempWalls(newMap: string[]) {
+        return newMap.map((row, y) =>
+            row
+                .split("")
+                .map((cell, x) => {
+                    if (originalTempWalls.current.some(pos => pos.x === x && pos.y === y)) {
+                        return moveCount.current % 2 === 0 ? "0" : "4";
+                    }
+                    return cell;
+                })
+                .join("")
+        );
+    }
 }
-

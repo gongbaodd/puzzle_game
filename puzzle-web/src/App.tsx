@@ -35,7 +35,18 @@ const level3 = [
   "3333333"
 ]
 
-const levels = [level1, level2, level3];
+const level4 = [
+  "3333333",
+  "3000013",
+  "3433333",
+  "3033333",
+  "3000003",
+  "3433313",
+  "3200003",
+  "3333333"
+]
+
+const levels = [level1, level2, level3, level4];
 
 export default App
 
