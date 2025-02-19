@@ -46,12 +46,23 @@ const level4 = [
   "3333333"
 ]
 
-const levels = [level1, level2, level3, level4];
+const level5 = [
+  "3333333",
+  "3001003",
+  "3004003",
+  "3330333",
+  "3330333",
+  "3052403",
+  "3100013",
+  "3333333"
+]
+
+const levels = [level1, level2, level3, level4, level5];
 
 export default App
 
 function App() {
-  const [level, setLevel] = useState(0);
+  const [level, setLevel] = useState(4);
 
   const handleWin = useCallback(() => {
     alert("You won!");
@@ -60,7 +71,8 @@ function App() {
 
   return (
     <div>
-      <Level key={level} originMap={levels[level]} onWin={handleWin}/>
+      {levels[level] && <Level key={level} originMap={levels[level]} onWin={handleWin}/>}
+      {!levels[level] && <h1>Congratulations</h1>}
     </div>
   )
 }
