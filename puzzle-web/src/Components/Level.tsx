@@ -17,17 +17,23 @@ export default function Level({ originMap, onWin }: Props) {
     const [map, setMap] = useState(originMap);
     const deferedMap = useDeferredValue(map);
     const moveCount = useRef(0);
-    
+
     useMount(() => {
         if (moveCount.current === 0) {
             setMap(toggleTempWalls(originMap));
         }
-    })
+    });
 
-    // Store the original TempWall positions
-    const originalTempWalls = useRef(
-        originMap.flatMap((row, y) => 
+    // Store the original TempWall (4) and TempWall (5) positions separately
+    const originalTempWalls4 = useRef(
+        originMap.flatMap((row, y) =>
             row.split("").map((cell, x) => (cell === "4" ? { x, y } : null))
+        ).filter(Boolean) as { x: number, y: number }[]
+    );
+
+    const originalTempWalls5 = useRef(
+        originMap.flatMap((row, y) =>
+            row.split("").map((cell, x) => (cell === "5" ? { x, y } : null))
         ).filter(Boolean) as { x: number, y: number }[]
     );
 
@@ -71,7 +77,7 @@ export default function Level({ originMap, onWin }: Props) {
             let newX = x + dx;
             let newY = y + dy;
 
-            while (map[newY] && "34".indexOf(map[newY][newX]) === -1) {
+            while (map[newY] && "345".indexOf(map[newY][newX]) === -1) {
                 if (map[newY][newX] === "1") {
                     break;
                 }
@@ -103,13 +109,13 @@ export default function Level({ originMap, onWin }: Props) {
         function setMoveCount(newMap: string[]) {
             if (newMap.join("") !== map.join("")) {
                 moveCount.current++;
-                console.log(moveCount.current)
+                console.log(moveCount.current);
             }
         }
     }, [map]);
 
     useEffect(() => {
-        const previousMap = deferedMap.join('');
+        const previousMap = deferedMap.join("");
 
         checkWinning();
 
@@ -126,7 +132,7 @@ export default function Level({ originMap, onWin }: Props) {
             {map.map((row, y) => (
                 <div key={y}>
                     {row.split("").map((num, x) => {
-                        const Element = elements[parseInt(num)];
+                        const Element = elements[parseInt(num)] ?? TempWall;
                         return <Element key={x} />;
                     })}
                 </div>
@@ -139,8 +145,11 @@ export default function Level({ originMap, onWin }: Props) {
             row
                 .split("")
                 .map((cell, x) => {
-                    if (originalTempWalls.current.some(pos => pos.x === x && pos.y === y)) {
-                        return moveCount.current % 2 === 0 ? "0" : "4";
+                    if (originalTempWalls4.current.some(pos => pos.x === x && pos.y === y)) {
+                        return moveCount.current % 2 === 0 ? "0" : "4"; // TempWall 4 toggles on even moves
+                    }
+                    if (originalTempWalls5.current.some(pos => pos.x === x && pos.y === y)) {
+                        return moveCount.current % 2 === 1 ? "0" : "5"; // TempWall 5 appears on odd moves
                     }
                     return cell;
                 })
