@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { drawBlock } from '../utils';
+
 export default function Wall() {  
     const tempWallCanvas = useRef<HTMLCanvasElement | null>(null);
-
 
     useEffect(() => {
         if (tempWallCanvas.current) {
