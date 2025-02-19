@@ -29,7 +29,7 @@ function Level1() {
     "3000003",
     "3000003",
     "3333333"
-  ]) 
+  ])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -55,19 +55,19 @@ function Level1() {
     return () => window.removeEventListener("keydown", handleKeyDown);
 
 
-    const findPlayer = () => {
+    function findPlayer() {
       for (let y = 0; y < map.length; y++) {
         const x = map[y].indexOf("2");
         if (x !== -1) return { x, y };
       }
       return null;
     };
-  
-    const movePlayer = (dx: number, dy: number) => {
+
+    function movePlayer(dx: number, dy: number) {
       const { x, y } = findPlayer()!;
       let newX = x + dx;
       let newY = y + dy;
-      
+
       while (map[newY] && "34".indexOf(map[newY][newX]) === -1) {
         if (map[newY][newX] === "1") {
           break;
@@ -75,7 +75,7 @@ function Level1() {
         newX += dx;
         newY += dy;
       }
-      
+
       if (map[newY] && map[newY][newX] === "1") {
         const newMap = [...map];
         newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
@@ -83,10 +83,10 @@ function Level1() {
         setMap(newMap);
         return;
       }
-      
+
       newX -= dx;
       newY -= dy;
-      
+
       if (newX !== x || newY !== y) {
         const newMap = [...map];
         newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
@@ -102,7 +102,7 @@ function Level1() {
       return <div key={y}>
         {row.split("").map((num, x) => {
           const Element = elements[parseInt(num)];
-          return <Element key={x}/>
+          return <Element key={x} />
         })}
       </div>
     })
