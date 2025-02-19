@@ -62,7 +62,7 @@ const levels = [level1, level2, level3, level4, level5];
 export default App
 
 function App() {
-  const [level, setLevel] = useState(4);
+  const [level, setLevel] = useState(0);
 
   const handleWin = useCallback(() => {
     alert("You won!");
