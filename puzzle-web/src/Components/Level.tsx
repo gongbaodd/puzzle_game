@@ -56,9 +56,18 @@ export default function Level({ originMap, onWin }: Props) {
                 case "ArrowRight":
                     movePlayer(1, 0);
                     break;
+                case "r":
+                case "R":
+                    reset();
+                    break;
                 default:
                     break;
             }
+        }
+
+        function reset() {
+            moveCount.current = 0;
+            setMap(toggleTempWalls(originMap));
         }
 
         function findPlayer() {
@@ -128,6 +137,8 @@ export default function Level({ originMap, onWin }: Props) {
     }, [deferedMap, onWin]);
 
     return (
+        <>
+        <h3>Press R to reset</h3>
         <div className="map">
             {map.map((row, y) => (
                 <div key={y}>
@@ -138,6 +149,7 @@ export default function Level({ originMap, onWin }: Props) {
                 </div>
             ))}
         </div>
+        </>
     );
 
     function toggleTempWalls(newMap: string[]) {
