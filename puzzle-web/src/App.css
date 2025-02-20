@@ -7,4 +7,10 @@
 
 .map {
   width: 700px;
+
+  &>div {
+    width: 700px;
+    height: 100px;
+  }
 }
+
