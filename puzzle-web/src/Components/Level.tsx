@@ -100,6 +100,7 @@ export default function Level({ originMap, onWin }: Props) {
                 newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
                 setMoveCount(newMap);
+                setMap(newMap)
                 setMap(toggleTempWalls(newMap));
                 playMoveSound()
                 return;
@@ -162,10 +163,20 @@ export default function Level({ originMap, onWin }: Props) {
                 .split("")
                 .map((cell, x) => {
                     if (originalTempWalls4.current.some(pos => pos.x === x && pos.y === y)) {
-                        return moveCount.current % 2 === 0 ? "0" : "4"; // TempWall 4 toggles on even moves
+                        // TempWall 4 toggles on even moves
+                        if (moveCount.current % 2 === 0) {
+                            return "0"
+                        } else {
+                            return "4"
+                        }
                     }
                     if (originalTempWalls5.current.some(pos => pos.x === x && pos.y === y)) {
-                        return moveCount.current % 2 === 1 ? "0" : "5"; // TempWall 5 appears on odd moves
+                        // TempWall 5 appears on odd moves
+                        if (moveCount.current % 2 === 1) {
+                            return "0"
+                        } else {
+                            return "5"
+                        }
                     }
                     return cell;
                 })
