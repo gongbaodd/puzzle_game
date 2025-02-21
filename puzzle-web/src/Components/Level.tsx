@@ -100,7 +100,6 @@ export default function Level({ originMap, onWin }: Props) {
                 newMap[y] = newMap[y].substring(0, x) + "0" + newMap[y].substring(x + 1);
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
                 setMoveCount(newMap);
-                setMap(newMap)
                 setMap(toggleTempWalls(newMap));
                 playMoveSound()
                 return;
