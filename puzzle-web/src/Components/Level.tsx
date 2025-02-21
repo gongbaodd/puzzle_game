@@ -6,8 +6,9 @@ import Wall from "./Wall";
 import TempWall from "./TempWall";
 import { useMount } from "react-use";
 import {zzfx} from 'zzfx'
+import Pass from "./Pass";
 
-const elements: FC[] = [Grass, Heart, Player, Wall, TempWall];
+const elements: FC[] = [Grass, Heart, Player, Wall, TempWall, TempWall, Pass];
 
 type Props = {
     originMap: string[],
@@ -164,7 +165,7 @@ export default function Level({ originMap, onWin }: Props) {
                     if (originalTempWalls4.current.some(pos => pos.x === x && pos.y === y)) {
                         // TempWall 4 toggles on even moves
                         if (moveCount.current % 2 === 0) {
-                            return "0"
+                            return "6"
                         } else {
                             return "4"
                         }
@@ -172,7 +173,7 @@ export default function Level({ originMap, onWin }: Props) {
                     if (originalTempWalls5.current.some(pos => pos.x === x && pos.y === y)) {
                         // TempWall 5 appears on odd moves
                         if (moveCount.current % 2 === 1) {
-                            return "0"
+                            return "6"
                         } else {
                             return "5"
                         }
