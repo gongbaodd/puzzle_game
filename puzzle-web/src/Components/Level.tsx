@@ -5,6 +5,7 @@ import Player from "./Player";
 import Wall from "./Wall";
 import TempWall from "./TempWall";
 import { useMount } from "react-use";
+import {zzfx} from 'zzfx'
 
 const elements: FC[] = [Grass, Heart, Player, Wall, TempWall];
 
@@ -100,6 +101,7 @@ export default function Level({ originMap, onWin }: Props) {
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
                 setMoveCount(newMap);
                 setMap(toggleTempWalls(newMap));
+                playMoveSound()
                 return;
             }
 
@@ -112,6 +114,7 @@ export default function Level({ originMap, onWin }: Props) {
                 newMap[newY] = newMap[newY].substring(0, newX) + "2" + newMap[newY].substring(newX + 1);
                 setMoveCount(newMap);
                 setMap(toggleTempWalls(newMap));
+                playMoveSound()
             }
         }
 
@@ -121,7 +124,7 @@ export default function Level({ originMap, onWin }: Props) {
                 console.log(moveCount.current);
             }
         }
-    }, [map]);
+    }, [map, originMap]);
 
     useEffect(() => {
         const previousMap = deferedMap.join("");
@@ -130,6 +133,7 @@ export default function Level({ originMap, onWin }: Props) {
 
         function checkWinning() {
             if (previousMap.indexOf("1") === -1) {
+                playWiningSound();
                 onWin();
             }
         }
@@ -168,4 +172,12 @@ export default function Level({ originMap, onWin }: Props) {
                 .join("")
         );
     }
+}
+
+function playMoveSound() {
+    zzfx(...[1.5, 0, 63, .04, .02, .11, 0, 3.3, 24, 0, 0, 0, 0, 0, 0, 0, .02, .7, .04]); // Jump 3
+}
+
+function playWiningSound() {
+    zzfx(...[.9, 0, 216, .1, .19, .19, 1, 1.5, 0, 0, 367, .06, .05, 0, 0, 0, 0, .83, .24, 0, 802]);
 }
